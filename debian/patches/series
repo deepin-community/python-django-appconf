@@ -1,0 +1,3 @@
+no-intersphinx.patch
+removes-privacy-breach.patch
+correctly-configures-test_settings.py.patch

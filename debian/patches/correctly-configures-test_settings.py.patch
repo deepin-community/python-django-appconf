@@ -1,0 +1,47 @@
+Description: Correctly configures test_settings.py for Django 2.2
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2019-07-18
+
+--- python-django-appconf-1.0.2.orig/tests/test_settings.py
++++ python-django-appconf-1.0.2/tests/test_settings.py
+@@ -14,6 +14,7 @@
+     'django.contrib.sites',
+     'django.contrib.auth',
+     'django.contrib.admin',
++    'django.contrib.messages',
+     'tests',
+ ]
+ 
+@@ -21,3 +22,31 @@
+     TEST_RUNNER = 'discover_runner.DiscoverRunner'
+ 
+ SECRET_KEY = 'local'
++
++TEMPLATES = [
++    {
++        'BACKEND': 'django.template.backends.django.DjangoTemplates',
++        'OPTIONS': {
++            'debug': True,
++            'context_processors': [
++                'django.template.context_processors.debug',
++                'django.template.context_processors.request',
++                'django.contrib.auth.context_processors.auth',
++                'django.contrib.messages.context_processors.messages',
++            ],
++            'loaders': [
++                'django.template.loaders.filesystem.Loader',
++                'django.template.loaders.app_directories.Loader',
++            ],
++
++        }
++    },
++]
++
++MIDDLEWARE = [
++    'django.contrib.auth.middleware.AuthenticationMiddleware',
++    'django.contrib.messages.middleware.MessageMiddleware',
++    'django.contrib.sessions.middleware.SessionMiddleware',
++    'django.middleware.locale.LocaleMiddleware',
++    'django_babel.middleware.LocaleMiddleware',
++]

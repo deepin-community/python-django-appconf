@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+
+UPSTREAM_GIT := https://github.com/django-compressor/django-appconf.git
+include /usr/share/openstack-pkg-tools/pkgos.make
+
+%:
+	dh $@ --buildsystem=python_distutils --with python3,sphinxdoc
+
+override_dh_auto_clean:
+	echo "Do nothing..."
+
+override_dh_auto_build:
+	echo "Do nothing..."
+
+override_dh_auto_test:
+	echo "Do nothing..."
+
+override_dh_auto_install:
+	pkgos-dh_auto_install --no-py2 --in-tmp
+
+ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
+	echo "===> Running tests"
+	set -e ; set -x ; for i in $(PYTHON3S) ; do \
+		PYMAJOR=`echo $$i | cut -d'.' -f1` ; \
+		echo "===> Testing with python$$i (python$$PYMAJOR)" ; \
+		PYTHON=python$$i PYTHONPATH=. django-admin test -v2 --settings=tests.test_settings ; \
+	done
+endif
+
+override_dh_sphinxdoc:
+	python3 -m sphinx -b html docs debian/python-django-appconf-doc/usr/share/doc/python-django-appconf-doc/html
+	dh_sphinxdoc -O--buildsystem=python_distutils
